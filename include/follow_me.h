@@ -3,7 +3,7 @@
 
 #include "constants/follow_me.h"
 
-#define DEFAULT_FOLLOWER_LOCAL_ID 0xFE
+#define DEFAULT_FOLLOWER_LOCAL_ID 0xF
 
 #define MOVEMENT_INVALID 0xFE
 
@@ -43,6 +43,9 @@ void FollowMe_HandleBike(void);
 void FollowMe_HandleSprite(void);
 void FollowMe_WarpSetEnd(void);
 void CreateFollowerAvatar(void);
+// CFRU-like: while an NPC-based follower is active, hide the original NPC on its origin map
+// to prevent duplicate overworld sprites when the map reloads.
+void FollowMe_HideOriginNpcOnCurrentMap(void);
 void EscalatorMoveFollower(u8 movementType);
 void EscalatorMoveFollowerFinish(void);
 bool8 FollowerCanBike(void);
@@ -56,4 +59,3 @@ void Task_DoDoorWarp(u8 taskId);
 bool8 IsPlayerOnFoot(void);
 
 #endif //GUARD_FOLLOW_ME_H 
-
