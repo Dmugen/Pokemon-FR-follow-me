@@ -66,16 +66,25 @@ const u8 *GetInteractedObjectEventScript(struct MapPosition *position, u8 metati
         return NULL;
 
     gSelectedObjectEvent = objectEventId;
-    gSpecialVar_LastTalked = gObjectEvents[objectEventId].localId;
+    {
+        u8 followerId = GetFollowerObjectId();
+        if (objectEventId == followerId)
+            gSpecialVar_LastTalked = OBJ_EVENT_ID_FOLLOWER;
+        else
+            gSpecialVar_LastTalked = gObjectEvents[objectEventId].localId;
+    }
     gSpecialVar_Facing = direction;
 
     //if (InTrainerHill() == TRUE)
     //    script = GetTrainerHillTrainerScript();
     //else 
-    if (objectEventId == GetFollowerObjectId())
-        script = GetFollowerScriptPointer();
-    else
-        script = GetObjectEventScriptPointerByObjectEventId(objectEventId);
+    {
+        u8 followerId = GetFollowerObjectId();
+        if (objectEventId == followerId)
+            script = GetFollowerScriptPointer();
+        else
+            script = GetObjectEventScriptPointerByObjectEventId(objectEventId);
+    }
 
     script = GetRamScript(gSpecialVar_LastTalked, script);
     return script;
