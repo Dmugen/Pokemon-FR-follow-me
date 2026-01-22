@@ -238,7 +238,6 @@ QuestLog_InitPalettesBackup = 0x08111f14|1;
 SetHelpContextForMap = 0x0812b35c|1;
 ResetObjectEvents = 0x0805de74|1;
 GetCameraFocusCoords = 0x08059808|1;
-InitPlayerAvatar = 0x0805ca3c|1;
 TrySpawnObjectEvents = 0x0805ec30|1;
 TryRunOnWarpIntoMapScript = 0x08069c9c|1;
 /*new_game.c*/
