@@ -171,7 +171,14 @@ void DoCB1_Overworld(u16 newKeys, u16 heldKeys)
 
     // if stop running but keep holding B -> fix follower frame
     if (PlayerHasFollower() && IsPlayerOnFoot() && walkrun_is_standing_still())
-        ObjectEventSetHeldMovement(&gObjectEvents[GetFollowerObjectId()], GetFaceDirectionAnimNum(gObjectEvents[GetFollowerObjectId()].facingDirection));
+    {
+        u8 followerId = GetFollowerObjectId();
+        if (followerId != OBJECT_EVENTS_COUNT)
+            ObjectEventSetHeldMovement(&gObjectEvents[followerId], GetFaceDirectionAnimNum(gObjectEvents[followerId].facingDirection));
+    }
+
+    // CFRU-like: continuously enforce hiding the origin NPC while a follower is active.
+    FollowMe_HideOriginNpcOnCurrentMap();
 }
 
 /**
@@ -195,6 +202,9 @@ bool32 ReturnToFieldLocal(u8 *state)
         QuestLog_InitPalettesBackup();
         ResumeMap(FALSE);
         ReloadObjectsAndRunReturnToFieldMapScript();
+        // CFRU-like: after any object reload, ensure the origin NPC is hidden while the follower is active.
+        // This fixes the "duplicate OW" that can appear after closing menus/battles where objects are reloaded.
+        FollowMe_HideOriginNpcOnCurrentMap();
         sub_8057114();
         (*state)++;
         break;
@@ -209,6 +219,8 @@ bool32 ReturnToFieldLocal(u8 *state)
             (*state)++;
         break;
     case 3:
+        // Final safety: hide origin NPC after post-load scripts finish.
+        FollowMe_HideOriginNpcOnCurrentMap();
         return TRUE;
     }
     return FALSE;
@@ -241,6 +253,11 @@ void InitObjectEventsLocal(void)
     SetPlayerAvatarTransitionFlags(player->transitionFlags);
     ResetInitialPlayerAvatarState();
     TrySpawnObjectEvents(0, 0);
+
+    // CFRU-like: if the follower originated from an NPC on this map, hide that original NPC
+    // so only the follower remains (prevents duplicate overworld sprites).
+    FollowMe_HideOriginNpcOnCurrentMap();
+
     TryRunOnWarpIntoMapScript();
 
     FollowMe_HandleSprite();
