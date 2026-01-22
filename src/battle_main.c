@@ -44,7 +44,11 @@ void ReturnFromBattleToOverworld(void)
 // if you experience the follower de-syncing with the player after battle, set POST_BATTLE_FOLLOWER_FIX to TRUE in include/constants/global.h
 #if POST_BATTLE_FOLLOWER_FIX
     FollowMe_WarpSetEnd();
-    gObjectEvents[GetFollowerObjectId()].invisible = TRUE;
+    {
+        u8 followerId = GetFollowerObjectId();
+        if (followerId != OBJECT_EVENTS_COUNT)
+            gObjectEvents[followerId].invisible = TRUE;
+    }
 #endif
 }
 
