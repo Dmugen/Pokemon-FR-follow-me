@@ -18,6 +18,9 @@
 void Setfollower(void)
 {
     u8 localId = gSpecialVar_0x8000;
+    // CFRU-like convenience: if not provided, use the last talked NPC.
+    if (localId == 0)
+        localId = (u8)gSpecialVar_LastTalked;
     u16 flags = gSpecialVar_0x8001;
 
     SetUpFollowerSprite(localId, flags);
